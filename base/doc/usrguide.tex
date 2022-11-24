@@ -62,9 +62,8 @@
 \providecommand\fprel[1]{\mathrel{\texttt{#1}}}
 \providecommand\nan{\texttt{NaN}}
 
-\ExplSyntaxOn
-\ProvideExpandableDocumentCommand \fpeval { m } { \fp_eval:n {#1} }
-\ExplSyntaxOff
+
+\NewCommandCopy \subsubsubsection \paragraph
 
 \begin{document}
 
@@ -86,9 +85,153 @@ into the \LaTeXe{} kernel. As such, they are now available to \emph{all}
 kernel. The fact that `behind the scenes' they are built on \pkg{expl3}
 is useful for the development team, but is not directly important to users.
 
-\section{Creating document commands and environments}
 
-\subsection{Overview}
+This document describes how to take advantage of the newer (and
+sometimes older) features of \LaTeX. However, this document is only a
+brief introduction to the new facilities and is intended for authors
+who are already familiar with the system, i.e., have a basic knowledge
+comparable to that is covered by the
+\emph{\LaTeXbook}~\cite{A-W:LLa94} or \emph{The Not So Short
+Introduction to \LaTeXe{}}~\cite{lshort}. Commands and features
+already covered there are only included if they got augmented or if we
+thought that some additional explanation (or a repeat) would be
+helpful here.  That is, this document is \emph{not} a reference manual
+for \LaTeX{} nor is it a complete introduction to \LaTeX.
+
+A comprehensive coverage of \LaTeX{} with much more details and many
+of its add-on packaes is provided by
+\emph{\LaTeXcomp}~\cite{A-W:FMi2023-I,A-W:FMi2023-II}.
+
+
+
+\section{Classes and packages}
+
+\emph{to be added to}
+
+
+
+
+
+\section{Commands}
+
+\subsection{Creating simple document commands and environments}
+
+In \LaTeX, commands can have both mandatory and optional arguments,
+for example in:
+\begin{verbatim}
+   \documentclass[11pt]{article}
+\end{verbatim}
+the |11pt| argument is optional, whereas the |article| class name is
+mandatory.
+
+
+\begin{decl}
+|\newcommand| \arg{cmd} \oarg{num} \oarg{default} \arg{definition} \\
+|\newcommand*| \arg{cmd} \oarg{num} \oarg{default} \arg{definition} \\
+|\renewcommand| \arg{cmd} \oarg{num} \oarg{default} \arg{definition} \\
+|\renewcommand*| \arg{cmd} \oarg{num} \oarg{default} \arg{definition}
+\end{decl}
+
+These commands can have a second, optional argument; this is used for
+defining commands which themselves take one optional argument.  This
+argument is best introduced by means of a simple (and hence not
+very practical) example:
+\begin{verbatim}
+   \newcommand{\example}[2][YYY]{Mandatory arg: #2;
+                                 Optional arg: #1.}
+\end{verbatim}
+This defines |\example| to be a command with two arguments, referred
+to as |#1| and |#2| in the \arg{definition}---nothing new so far.  But
+by adding a second optional argument to this |\newcommand| (the
+|[YYY]|) the first argument (|#1|) of the newly defined command
+|\example| is made optional with its default value being |YYY|.
+
+Thus the usage of |\example| is either:
+\begin{verbatim}
+   \example{BBB}
+\end{verbatim}
+which prints:
+\begin{quote}
+   Mandatory arg: BBB;
+   Optional arg: YYY.
+\end{quote}
+or:
+\begin{verbatim}
+   \example[XXX]{AAA}
+\end{verbatim}
+which prints:
+\begin{quote}
+   Mandatory arg: AAA;
+   Optional arg: XXX.
+\end{quote}
+
+The default value of the optional argument is \texttt{YYY}.
+This value is specified as the \oarg{default} argument of the
+|\newcommand| that created |\example|.
+
+As another more useful example, the definition:
+\begin{verbatim}
+   \newcommand{\seq}[2][n]{\lbrace #2_{0},\ldots,\,#2_{#1} \rbrace}
+\end{verbatim}
+means that the input |$\seq{a}$| produces
+the formula $\lbrace a_{0},\ldots,\,a_{n} \rbrace$,
+whereas the input |$\seq[k]{x}$| produces the formula
+$\lbrace x_{0},\ldots,\,x_{k} \rbrace$.
+
+In summary, the command:
+\begin{quote}
+   |\newcommand| \arg{cmd} \oarg{num} \oarg{default} \arg{definition}
+\end{quote}
+defines \m{cmd} to be a command with \m{num} arguments, the first of
+which is optional and has default value \m{default}.
+
+Note that there can only be one optional argument but, as before,
+there can be up to nine arguments in total.
+
+If a comment defined in this way has an optional argument then it is
+automatically made robust, so that it doesn't breaking a moving
+argument.
+
+
+\begin{decl}
+|\providecommand| \arg{cmd} \oarg{num} \oarg{default} \arg{definition} \\
+|\providecommand*| \arg{cmd} \oarg{num} \oarg{default} \arg{definition}
+\end{decl}
+
+This takes the same arguments as |\newcommand|. If \m{cmd} is already
+defined then the existing definition is kept; but if it is currently
+undefined then the effect of |\providecommand| is to define \m{cmd}
+just as if |\newcommand| had been used.
+
+All the above `defining commands' have \texttt{*}-forms that are
+usually the better form to use when defining commands with arguments,
+unless any of these arguments is intended to contain whole paragraphs
+of text.  Moreover, if you ever do find yourself needing to use the
+non-star form then you should ask whether that argument would not
+better be treated as the contents of a suitably defined environment.
+
+
+\begin{decl}
+|\newenvironment|
+ \arg{cmd} \oarg{num} \oarg{default} \arg{beg-def} \arg{end-def} \\
+|\newenvironment*|
+ \arg{cmd} \oarg{num} \oarg{default} \arg{beg-def} \arg{end-def} \\
+|\renewenvironment|
+ \arg{cmd} \oarg{num} \oarg{default} \arg{beg-def} \arg{end-def} \\
+|\renewenvironment*|
+ \arg{cmd} \oarg{num} \oarg{default} \arg{beg-def} \arg{end-def}
+\end{decl}
+
+\LaTeXe\ also supports the creation of environments that have one
+optional argument.  Thus the syntax of these two commands has
+been extended in the same way as that of |\newcommand|.
+
+
+
+
+\subsection{Creating complex document commands and environments}
+
+\subsubsection{Overview}
 
 Creating document commands and environments using the \LaTeX3 toolset is based
 around the idea that a common set of descriptions can be used to cover almost
@@ -106,7 +249,7 @@ The details here are intended to help users create document commands in
 general. More technical detail, suitable for \TeX{} programmers, is included
 in \texttt{interface3}.
 
-\subsection{Describing argument types}
+\subsubsection{Describing argument types}
 
 In order to allow each argument to be defined independently, the parser does
 not simply need to know the number of arguments for a function, but also the
@@ -179,7 +322,7 @@ The types which define optional arguments are:
     Section~\ref{sec:cmd:embellishment} for more details.
 \end{itemize}
 
-\subsection{Modifying argument descriptions}
+\subsubsection{Modifying argument descriptions}
 
 In addition to the argument \emph{types} discussed above, the argument
 description also gives special meaning to three other characters.
@@ -205,7 +348,7 @@ argument before it is passed to the macro definition. The use of argument
 processors is a somewhat advanced topic, (or at least a less commonly used
 feature) and is covered in Section~\ref{sec:cmd:processors}.
 
-\subsection{Creating document commands and environments}
+\subsubsection{Creating document commands and environments}
 
 \begin{decl}
   |\NewDocumentCommand|     \arg{cmd} \arg{arg spec} \arg{code} \\
@@ -266,7 +409,7 @@ create environments (\cs{begin}\arg{env} \ldots{}
 may access the arguments as defined by \meta{arg spec}. The arguments will be
 given following \cs{begin}\arg{env}.
 
-\subsection{Optional arguments}
+\subsubsection{Optional arguments}
 \label{sec:cmd:opt}
 
 In contrast to commands created using \LaTeXe{}'s \cs{newcommand}, optional
@@ -302,7 +445,7 @@ the result of grabbing another argument. Thus for example
 would use the mandatory argument as the default for the leading optional
 one.
 
-\subsection{Spacing and optional arguments}
+\subsubsection{Spacing and optional arguments}
 \label{sec:cmd:opt-space}
 
 \TeX{} will find the first argument after a function name irrespective of any
@@ -340,7 +483,7 @@ in \pkg{amsmath} environments, which in the terms here would be defined as
 \NewDocumentCommand\\{!s !o}{ ... }
 \end{verbatim}
 
-\subsection{`Embellishments'}
+\subsubsection{`Embellishments'}
 \label{sec:cmd:embellishment}
 
 The \texttt{E}-type argument allows one default value per test token. This is
@@ -359,7 +502,7 @@ has default \texttt{UP} for the |^| test character, but will return the
 defaults with testing for missing values.
 
 
-\subsection{Testing special values}
+\subsubsection{Testing special values}
 \label{sec:cmd:special}
 
 Optional arguments make use of dedicated variables to return information about
@@ -493,7 +636,7 @@ Used to test if \meta{argument} (|#1|, |#2|, \emph{etc.}) is
 checks for a star as the first argument, then chooses the action to
 take based on this information.
 
-\subsection{Auto-converting to key--value format}
+\subsubsection{Auto-converting to key--value format}
 \label{sec:cmd:keyval}
 
 Some document commands have a long history of accepting a `free text' optional
@@ -569,7 +712,7 @@ Grabbed arguments:
 (short-text = {Not = to a keyval!})
 \end{verbatim}
 
-\subsection{Argument processors}
+\subsubsection{Argument processors}
 \label{sec:cmd:processors}
 
 Argument processor are applied to an argument \emph{after} it has been grabbed
@@ -682,7 +825,7 @@ end removed. \cs{TrimSpaces} will remove multiple spaces from the ends of
 the input in cases where these have been included such that the standard
 \TeX{} conversion of multiple spaces to a single space does not apply.
 
-\subsection{Body of an environment}
+\subsubsection{Body of an environment}
 \label{sec:cmd:body}
 
 While environments |\begin|\marg{environment}\ \dots{}\,|\end|\marg{environment}
@@ -716,7 +859,7 @@ put that code at the end of the \meta{start code}. Nevertheless this
 
 Environments that use this feature can be nested.
 
-\subsection{Fully-expandable document commands}
+\subsubsection{Fully-expandable document commands}
 
 Document commands created using \cs{NewDocumentCommand}, etc.\@, are normally
 created so that they do not expand unexpectedly. This is done using engine
@@ -755,7 +898,7 @@ available:
     in the standard version.
 \end{itemize}
 
-\subsection{Details about argument delimiters}
+\subsubsection{Details about argument delimiters}
 
 In normal (non-expandable) commands, the delimited types look for the
 initial delimiter by peeking ahead (using \pkg{expl3}'s |\peek_...|
@@ -766,7 +909,7 @@ sequence tokens, and active character tokens.  For all practical purposes
 of this description, active character tokens will behave exactly as
 control sequence tokens.
 
-\subsubsection{Character tokens}
+\subsubsubsection{Character tokens}
 
 A character token is characterized by its character code, and its meaning
 is the category code~(|\catcode|).  When a command is defined, the meaning
@@ -792,7 +935,7 @@ close-delimiter will also be there.  If it is not (either by being
 omitted or by changing in meaning), a low-level \TeX{} error is raised
 and the command call is aborted.
 
-\subsubsection{Control sequence tokens}
+\subsubsubsection{Control sequence tokens}
 
 A control sequence (or control character) token is characterized by is
 its name, and its meaning is its definition.
@@ -815,7 +958,7 @@ the output would be:
 \end{verbatim}
 with both calls to the command seeing the delimiter |\x|.
 
-\subsection{Creating new argument processors}
+\subsubsection{Creating new argument processors}
 
 \begin{decl}
   |\ProcessedArgument|
@@ -838,7 +981,7 @@ defined as
 [As an aside: the code is written in \pkg{expl3}, so we don't have to
   worry about spaces creeping into the definition.]
 
-\subsection{Access to the argument specification}
+\subsubsection{Access to the argument specification}
 
 The argument specifications for document commands and environments are
 available for examination and use.
@@ -865,7 +1008,7 @@ specification then an error is issued.
 
 
 
-\section{Copying and showing (robust) commands}
+\subsection{Copying and showing (robust) commands}
 
 If you want to (slightly) alter an existing command you may want to
 save the current definition under a new name and then use that in a
@@ -927,7 +1070,7 @@ also the actual payload code and in case of commands declared with
 about the argument signature.
 
 
-\section[Preconstructing command names \\ (or otherwise expanding arguments)]
+\subsection[Preconstructing command names \\ (or otherwise expanding arguments)]
         {Preconstructing command names (or otherwise expanding arguments)}
 \label{sec:preconstructing-csnames}
 
@@ -999,7 +1142,10 @@ documentation in \texttt{interface3.pdf}.
 
 
 
-\section{Expandable floating point (and other) calculations}
+\section{Unsorted material from the old and new guide}
+
+
+\subsection{Expandable floating point (and other) calculations}
 
 The \LaTeX3 programming layer which is part of the format offers a
 rich interface to manipulate floating point variables and values. To
@@ -1141,7 +1287,7 @@ it is set to \dimeval{\topskip+\baselineskip*\inteval{40-1}}, given
 the values \cs{topskip} (\dimeval{\topskip}) and \cs{baselineskip}
 (\dimeval{\baselineskip}) in the current document.
 
-\section{Case changing}
+\subsection{Case changing}
 
 \TeX{} provides two primitives \cs{uppercase} and \cs{lowercase} for changing
 the case of text. However, these have a range of limitations: they only change
@@ -1202,5 +1348,95 @@ cases
 The command \cs{DeclareCaseChangeEquivalent} provides a way to substitute a
 command by an alternative version when it is found inside a case changing
 situation.
+
+
+\subsection{Environments to write out support files}
+
+\begin{decl}
+|\begin{filecontents}| \oarg{option-list} \arg{file-name} \\
+  \m{file-contents} \\
+|\end{filecontents}|
+\end{decl}
+
+The |filecontents| environment is intended for bundling within a
+single document file the contents of packages, options, or other
+files.  When the document file is run through \LaTeXe{} the body of
+this environment is written verbatim (preceded by a comment line) to a
+file whose name is given as the environment's only argument.  However,
+if that file already exists then nothing happens except for an
+information message.
+
+These days most UTF-8 text characters can be used in a
+|filecontents| envi\-ronment---they will be written unchanged to the
+output file.  However, tabs and form feeds produce a warning,
+explaining that they are turned into spaces or blank lines,
+respectively.
+
+By default the environment does not overwrite an existing file and it
+even refuses to write out the data if there exists a file that is
+anywhere in the path that \TeX\ searches when inputting files.  With
+the option |nosearch| you can ask it to look only into the current
+directory and with the option |overwrite| (or |force|) you can request
+it to write the file regardless. It will, however, never write to
+|\jobname.tex| to avoid overwriting itself.
+%
+This forced overwriting generates a warning by default and if you want
+to supress that warning (for example, because you repeatedly write to
+some temporary file while processing the document) you can do so by
+additionally specify the option |nowarn|.
+
+
+The |filecontents| environment is used for including \LaTeX{} files.
+For other plain text files (such as Encapsulated PostScript files),
+you should use the |filecontents*| environment which does not add a
+comment line.
+
+
+\begin{thebibliography}{1}
+
+\bibitem{A-W:GMRRV2007}
+Michel Goossens,  Frank Mittelbach, Sebastian Rahtz, Denis Roegel and Herbert Voß.
+\newblock {\em The {\LaTeX} Graphics Companion, second edition}.
+\newblock Addison-Wesley, New York, 2007.
+\newblock Reprinted by Lehmanns, Berlin 2022.
+
+\bibitem{A-W:GR99}
+Michel Goossens and Sebastian Rahtz.
+\newblock {\em The {\LaTeX} Web Companion}.
+\newblock Addison-Wesley, Reading, Massachusetts, 1999.
+
+
+\bibitem{A-W:DEK2021}
+Donald~E. Knuth.
+\newblock {\em The \TeX book, Jubilee 2021 edition}.
+\newblock Addison-Wesley, New York, 2021.
+
+
+\bibitem{A-W:LLa94}
+Leslie Lamport.
+\newblock {\em {\LaTeX:} A Document Preparation System}.
+\newblock Addison-Wesley, Reading, Massachusetts, second edition, 1994.
+
+\bibitem{A-W:FMi2023-I}
+Frank Mittelbach with Ulrike Fischer.
+\newblock {\em The {\LaTeX} Companion, third edition --- Part~I}.
+\newblock With contributions by Joseph Wright.
+\newblock Addison-Wesley, 2023.
+
+\bibitem{A-W:FMi2023-II}
+Frank Mittelbach with Ulrike Fischer.
+\newblock {\em The {\LaTeX} Companion, third edition --- Part~II}.
+\newblock With contributions by Javier Bezos, Johannes Braams, and Joseph Wright.
+\newblock Addison-Wesley, 2023.
+
+\bibitem{lshort}
+Tobias Oetiker, Hubert Partl, Irene Hyna, and Elisabeth Schlegl.
+\newblock {\em The Not So Short Introduction
+to \LaTeXe{}} --- Or \LaTeXe{} in 139 minutes.
+\newblock Available in your \LaTeX{} distribution via \verb*/texdoc lshort/.
+
+
+\end{thebibliography}
+
 
 \end{document}

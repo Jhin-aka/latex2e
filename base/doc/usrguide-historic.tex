@@ -45,16 +45,45 @@
 \date{30 August 2022}
 
 
+\usepackage{color}
+
+\newenvironment{copied-to-usrguide}{\em\color{blue}}{}
+
+
 \begin{document}
 
 \maketitle
 
 \tableofcontents
 
+\section{Preface}
+
+This document, except for this preface, is the original user guide for
+\LaTeXe{}, started in 1994 and amended over the years with new
+information. A lot of what was ``new'' back then is now more
+than thirty years old and often no longer relevant because most
+current users have never seen \LaTeX~2.09 and therefore do not need
+explanations on what is different between that version and today's
+release.
+
+We have therefore frozen this guide in 2022 under the name
+\texttt{usrguide-historic}.  New features are now all documented in
+\texttt{usrguide.pdf} and over time we will copy still relevant
+information from the ``historic'' document to the new one. Once this
+process is complete the current note will change --- for now you have
+to look into both if a feature is not yet documented in the
+\texttt{usrguide}. Sections already copied to the new guide (and
+updated as necessary there) are shown in blue italics (for the moment).
+
+\[  * \qquad * \qquad * \]
+
+
 \section{Introduction}
 
 Welcome to \LaTeXe, the new standard version of the \LaTeX{} Document
 Preparation System.
+
+\begin{copied-to-usrguide}
 
 This document describes how to take advantage of the new features of
 \LaTeX, and how to process your old \LaTeX{} documents with
@@ -65,6 +94,10 @@ for \LaTeXe{} nor is it a complete introduction to \LaTeX.
 
 It is somewhat of an historical document now, since \LaTeXe{} came into
 existence in 1994.
+
+\end{copied-to-usrguide}
+
+
 
 \subsection[\LaTeXe---The new \LaTeX~release]
   {\LaTeXe---The new \LaTeX~release\\ (well, for more than 10 years now)}
@@ -176,7 +209,7 @@ by Leslie Lamport~\cite{A-W:LLa94}.
 
 A more detailed description of the new features of \LaTeX, including an
 overview of more than 200 packages and nearly 1000 ready to run examples, is
-to be found in \emph{\LaTeXcomp second edition} by Frank Mittelbach and
+to be found in \emph{\LaTeXcomp{} second edition} by Frank Mittelbach and
 Michel Goossens~\cite{A-W:MG2004}.
 
 Packages and programs for producing and manipulating graphics are
@@ -627,6 +660,8 @@ not want to see the internal definitions of \LaTeX\ commands each time
 they make an error, \LaTeXe{} sets this to $-1$ by default.
 
 
+\begin{copied-to-usrguide}
+  
 \subsection{Environments to write out support files}
 
 \NEWfeature{2019}
@@ -670,6 +705,7 @@ you should use the |filecontents*| environment which does not add a
 comment line.
 
 
+\end{copied-to-usrguide}
 
 
 \subsection{Document structure}
@@ -684,6 +720,9 @@ table of contents and prefaces), main matter (main text) and back
 matter (bibliography, indexes and colophon).
 
 \subsection{Definitions}
+
+
+\begin{copied-to-usrguide}
 
 In \LaTeX, commands can have both mandatory and optional arguments,
 for example in:
@@ -798,6 +837,12 @@ just as if |\newcommand| had been used.
   The commands produced by the above five `defining commands' are
   now robust.
 
+
+\end{copied-to-usrguide}
+
+
+
+  
 \subsection{Boxes}
 
 These next three commands for making LR-boxes all existed in
