@@ -146,8 +146,39 @@
 
 \section{New or improved commands}
 
+
+
+\subsection{Providing copy and show functions for environments}
+
+To copy a command definition we have introduced \cs{NewCommandCopy} in
+2022.  This even allows you to copy commands that consist of several internal
+components, such as robust commands or those with a complex signature.
+To do the same with environments, e.g., to define the environment
+\env{myitemize} to be equivalent to \env{itemize}, you can now write
+\begin{verbatim}
+  \NewEnvironmentCopy{myitemize}{itemize}
+\end{verbatim}
+There are also \cs{Renew...}\ and \cs{Declare...}, which may be useful
+depending on the circumstances.
+
+In addition, we offer a \cs{ShowEnvironment} command, which displays the
+\cs{begin} and \cs{end} code of the environment passed as an
+argument. E.g., \verb=\ShowEnvironment{center}= results in the
+following output:
+\begin{verbatim}
+  > \begin{center}=environment:
+  > ->\trivlist \centering \item \relax .
+  <recently read> }
+  l. ...\ShowEnvironment{center}
+  > \end{center}:
+  > ->\endtrivlist .
+  <recently read> }
+  l. ...\ShowEnvironment{center}
+\end{verbatim}
 %
-\githubissue{xxx}
+\githubissue{963}
+
+
 
 
 \section{Code improvements}
@@ -157,6 +188,21 @@
 \emph{to write}
 %
 \githubissue{943}
+
+
+\subsection{Default definition for \cs{do}}
+
+The command \cs{do} with its nice public name is in reality an
+internal command inherited from plain \TeX{} for list
+processing. However, it only got a definition when
+\verb=\begin{document}= was executed, with a result that a user
+definition in the preamble was unconditionally overwritten at this
+point. To properly alert the user that this command is not freely
+available we now already provide a definition in the format so that
+\cs{newcommand} and friends produce a proper error message instead of
+providing a definition that doesn't last.
+%
+\githubissue{975}
 
 
 \subsection{\pkg{doc}: Support the \pkg{upquote} package}
@@ -259,6 +305,7 @@ it is open and ready to receive material.
 
 
 
+
 \section{Bug fixes}
 
 \subsection{Incompatibility between \pkg{doc} and \pkg{unicode-math}}
@@ -270,6 +317,20 @@ strange way. This is now fixed with some firstaid code that will
 eventually be moved into \pkg{unicode-math}.
 %
 \githubissue{820}
+
+
+\subsection{A fix for \cs{hspace}}
+
+The change to \cs{hspace}, done in 2020 to make it \pkg{calc} aware,
+had the unfortunate side effect that starting a paragraph with
+\cs{hspace} would result in the execution of \cs{everypar} inside a
+group (i.e., any local changes would immediately be revoked, breaking,
+for example, \pkg{wrapfig} in that special situation).
+%
+This got fixed with the 2022-11 PL1 hotfix, so was already corrected in
+the previous release, but only now documented in a newletter.
+%
+\githubissue{967}
 
 
 

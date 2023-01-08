@@ -28,6 +28,7 @@ fancyhdr
 # special testing for firstaid
 bidi
 bigfoot
+crop
 ncctools
 dinbrief
 everyshi
@@ -38,6 +39,7 @@ ulem
 unicode-math
 lualatex-math
 varwidth
+songs
 #
 # special testing for latex-lab
 pdfmanagement-testphase
