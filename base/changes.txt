@@ -6,6 +6,12 @@ completeness or accuracy and it contains some references to files that
 are not part of the distribution.
 ================================================================================
 
+2023-01-12  Joseph Joseph  <Joseph.Joseph@latex-project.org>
+
+	* clsguide.tex, clsguide-historic,tex
+	Pre-2023 source moved to new name, re-worked material which remains
+	relevant in updated file
+
 ================================================================================
 All changes above are only part of the development branch for the next release.
 ================================================================================
